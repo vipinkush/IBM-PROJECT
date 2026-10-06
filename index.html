@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AquaPure IoT | Clean Water & Sanitation Platform (SDG 6)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Ambient Glow -->
+  <div class="ambient-bg"></div>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="logo-group">
+        <div class="logo-badge">💧</div>
+        <div class="brand-text">
+          <h1>AquaPure IoT</h1>
+          <span>UN SDG 6 • Water & Sanitation</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#simulator">Live IoT Demo</a></li>
+        <li><a href="#leancanvas">Lean Canvas</a></li>
+        <li><a href="#architecture">Hardware & Architecture</a></li>
+        <li><a href="#impact">Impact Calculator</a></li>
+      </ul>
+      <a href="#simulator" class="btn-header">
+        <span>⚡ Test Live System</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container">
+      <div class="sdg-badge">
+        <span>🌍 UN Sustainable Development Goal 6</span>
+      </div>
+      <h1 class="hero-title">
+        Smart IoT Water Purity & <br>
+        <span class="hero-highlight">Sanitation Protection</span>
+      </h1>
+      <p class="hero-sub">
+        An edge-powered IoT platform providing real-time water quality sensing, 
+        automated contamination shut-off, and community sanitation tracking for underserved areas.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#simulator" class="btn-primary">
+          <span>🚀 Explore Live IoT Node</span>
+        </a>
+        <a href="#leancanvas" class="btn-secondary">
+          <span>📋 View 1-Page Lean Canvas</span>
+        </a>
+      </div>
+
+      <!-- Quick Global Stats Ribbon -->
+      <div class="quick-stats">
+        <div class="stat-item">
+          <div class="stat-num">2.2 Billion</div>
+          <div class="stat-label">People globally lack access to safe drinking water (WHO/UNICEF)</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">&lt; 1.5 Sec</div>
+          <div class="stat-label">Edge latency to shut down valve when toxins or mud are detected</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="total-dispensed">4,280 L</div>
+          <div class="stat-label">Liters of safe water dispensed by this community node today</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100% Solar</div>
+          <div class="stat-label">Low-power ESP32 micro-architecture with offline LoRa/GSM fallback</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- LIVE IOT SIMULATION & MONITORING DASHBOARD -->
+  <section id="simulator" class="container">
+    <div class="section-header">
+      <span class="section-tag">Interactive Hardware Prototype</span>
+      <h2 class="section-title">Live IoT Water Telemetry Station</h2>
+      <p class="section-desc">
+        Experience how the ESP32 edge sensor node monitors water purity in real-time and acts instantly to protect community health.
+      </p>
+    </div>
+
+    <div class="simulator-panel">
+      <!-- Panel Header & Preset Triggers -->
+      <div class="sim-header">
+        <div>
+          <span class="node-status-badge">
+            <span class="node-status-dot"></span>
+            NODE-01: ONLINE (ESP32 Edge Mesh)
+          </span>
+        </div>
+        <div class="sim-scenario-btns">
+          <span style="font-size: 0.8rem; color: var(--text-muted); align-self: center; margin-right: 6px;">Simulate Conditions:</span>
+          <button class="scenario-btn active" data-scenario="pure">💧 Pure Water</button>
+          <button class="scenario-btn" data-scenario="tap">🚰 Municipal Tap</button>
+          <button class="scenario-btn" data-scenario="runoff">🌧️ Flood Runoff</button>
+          <button class="scenario-btn" data-scenario="industrial">⚠️ Acid Spillage</button>
+        </div>
+      </div>
+
+      <!-- Master Alert / Solenoid Valve Status Banner -->
+      <div id="master-banner" class="master-status-banner">
+        <div class="banner-left">
+          <span id="banner-icon" class="banner-icon">🛡️</span>
+          <div>
+            <div id="banner-title" class="banner-title">WATER SOURCE POTABLE & SECURE</div>
+            <div id="banner-sub" class="banner-sub">All monitored parameters are well within WHO and BIS safe drinking standards.</div>
+          </div>
+        </div>
+        <div id="valve-status" class="valve-tag">VALVE: OPEN (ACTIVE)</div>
+      </div>
+
+      <!-- 4 Live Gauge Cards Grid -->
+      <div class="gauge-grid">
+        <!-- Gauge 1: pH Level -->
+        <div class="gauge-card">
+          <div class="gauge-label">Acidity / Alkalinity (pH)</div>
+          <div class="gauge-value-display">
+            <span id="ph-val">7.2</span>
+            <span class="gauge-unit">pH</span>
+          </div>
+          <div class="gauge-bar-container">
+            <div id="ph-bar" class="gauge-bar-fill" style="width: 51%;"></div>
+          </div>
+          <div id="ph-status" class="gauge-status-sub text-safe">Safe (6.5 - 8.5)</div>
+        </div>
+
+        <!-- Gauge 2: TDS -->
+        <div class="gauge-card">
+          <div class="gauge-label">Dissolved Solids (TDS)</div>
+          <div class="gauge-value-display">
+            <span id="tds-val">185</span>
+            <span class="gauge-unit">ppm</span>
+          </div>
+          <div class="gauge-bar-container">
+            <div id="tds-bar" class="gauge-bar-fill" style="width: 23%;"></div>
+          </div>
+          <div id="tds-status" class="gauge-status-sub text-safe">Optimal (&lt;300 ppm)</div>
+        </div>
+
+        <!-- Gauge 3: Turbidity -->
+        <div class="gauge-card">
+          <div class="gauge-label">Cloudiness (Turbidity)</div>
+          <div class="gauge-value-display">
+            <span id="turb-val">1.4</span>
+            <span class="gauge-unit">NTU</span>
+          </div>
+          <div class="gauge-bar-container">
+            <div id="turb-bar" class="gauge-bar-fill" style="width: 8%;"></div>
+          </div>
+          <div id="turb-status" class="gauge-status-sub text-safe">Crystal Clear (&lt;5 NTU)</div>
+        </div>
+
+        <!-- Gauge 4: Flow Rate -->
+        <div class="gauge-card">
+          <div class="gauge-label">Current Dispensing Flow</div>
+          <div class="gauge-value-display">
+            <span id="flow-val">14.5</span>
+            <span class="gauge-unit">L/min</span>
+          </div>
+          <div class="gauge-bar-container">
+            <div id="flow-bar" class="gauge-bar-fill" style="width: 60%;"></div>
+          </div>
+          <div id="flow-status" class="gauge-status-sub text-safe">Dispensing Normal</div>
+        </div>
+      </div>
+
+      <!-- Manual Fine-tuning Slider Bar (For testing edge thresholds) -->
+      <div class="controls-expander">
+        <div class="controls-expander-title">
+          <span>🎛️ Manual Hardware Calibration & Threshold Testing</span>
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">Move sliders to trigger automated shutoff response</span>
+        </div>
+        <div class="slider-group">
+          <div class="slider-box">
+            <label><span>Manual pH Level</span><span>3.0 - 11.0</span></label>
+            <input type="range" id="slider-ph" min="3.0" max="11.0" step="0.1" value="7.2">
+          </div>
+          <div class="slider-box">
+            <label><span>Manual TDS (ppm)</span><span>50 - 1200</span></label>
+            <input type="range" id="slider-tds" min="50" max="1200" step="10" value="185">
+          </div>
+          <div class="slider-box">
+            <label><span>Manual Turbidity (NTU)</span><span>0 - 30</span></label>
+            <input type="range" id="slider-turb" min="0" max="30" step="0.5" value="1.4">
+          </div>
+          <div class="slider-box">
+            <label><span>Dispenser Valve Flow</span><span>0 - 25 L/min</span></label>
+            <input type="range" id="slider-flow" min="0" max="25" step="1" value="14">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEAN CANVAS SECTION -->
+  <section id="leancanvas" class="container canvas-section">
+    <div class="section-header">
+      <span class="section-tag">Strategic Project Plan</span>
+      <h2 class="section-title">Clean Water & Sanitation: Lean Canvas</h2>
+      <p class="section-desc">
+        Structured business and execution model mapping out problems, target users, unique value propositions, and financial sustainability.
+      </p>
+    </div>
+
+    <!-- Classic 10-Block Grid Layout -->
+    <div class="canvas-layout">
+
+      <!-- 1. PROBLEM -->
+      <div class="canvas-card grid-col-1-span-2">
+        <div class="canvas-num">1</div>
+        <div class="canvas-badge">🚨 Top 3 Problems</div>
+        <h3 class="canvas-header-title">Problem</h3>
+        <ul class="canvas-content-list">
+          <li><strong>Dangerous Contaminants:</strong> Groundwater & piped water frequently contains cholera, E. coli, arsenic, excess fluoride, and lead.</li>
+          <li><strong>Zero Real-time Visibility:</strong> Water safety is tested infrequently in centralized labs; contamination is noticed only after hospitalizations occur.</li>
+          <li><strong>Broken WASH Infrastructure:</strong> Water kiosks, borewells, and community toilets fall into disrepair due to no proactive maintenance tracking.</li>
+        </ul>
+      </div>
+
+      <!-- 4. SOLUTION -->
+      <div class="canvas-card grid-col-2-top">
+        <div class="canvas-num">4</div>
+        <div class="canvas-badge">💡 Top Features</div>
+        <h3 class="canvas-header-title">Solution</h3>
+        <ul class="canvas-content-list">
+          <li><strong>IoT Quality Node:</strong> Low-cost multi-sensor probe (pH, TDS, Turbidity, Flow) sampling water every 60 seconds.</li>
+          <li><strong>Auto-Lockout Solenoid Valve:</strong> Shuts off dispensing instantly if toxic thresholds are breached.</li>
+          <li><strong>Proactive Field App:</strong> Technicians receive automated alerts for filter replacements and toilet sanitation checklists.</li>
+        </ul>
+      </div>
+
+      <!-- 8. KEY METRICS -->
+      <div class="canvas-card grid-col-2-bottom">
+        <div class="canvas-num">8</div>
+        <div class="canvas-badge">📊 Progress Tracking</div>
+        <h3 class="canvas-header-title">Key Metrics</h3>
+        <ul class="canvas-content-list">
+          <li>Liters of verified safe drinking water dispensed daily.</li>
+          <li>Number of contamination incidents caught before consumption.</li>
+          <li>Mean Time to Repair (MTTR) broken water points (&lt; 24h).</li>
+          <li>% reduction in reported waterborne illnesses in the cluster.</li>
+        </ul>
+      </div>
+
+      <!-- 3. UNIQUE VALUE PROPOSITION -->
+      <div class="canvas-card grid-col-3-span-2" style="border-color: rgba(6, 182, 212, 0.4); background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(6, 182, 212, 0.05));">
+        <div class="canvas-num">3</div>
+        <div class="canvas-badge">💎 Core Value</div>
+        <h3 class="canvas-header-title">Unique Value Proposition</h3>
+        <p style="font-size: 1.05rem; font-weight: 600; color: #fff; margin-bottom: 14px; line-height: 1.5;">
+          "An affordable, solar-powered IoT water filtration and real-time safety monitoring system that guarantees clean drinking water and alerts communities before illness spreads."
+        </p>
+        <ul class="canvas-content-list">
+          <li>Eliminates blind consumption of unsafe water.</li>
+          <li>Visual green/red tap indicator understandable by anyone.</li>
+          <li>Zero dependence on distant testing labs.</li>
+        </ul>
+      </div>
+
+      <!-- 9. UNFAIR ADVANTAGE -->
+      <div class="canvas-card grid-col-4-top">
+        <div class="canvas-num">9</div>
+        <div class="canvas-badge">🛡️ Hard to Copy</div>
+        <h3 class="canvas-header-title">Unfair Advantage</h3>
+        <ul class="canvas-content-list">
+          <li><strong>Edge Drift Algorithm:</strong> Software filter that differentiates dirt spikes from hazardous chemical toxins.</li>
+          <li><strong>Offline-First Resilience:</strong> Works via LoRaWAN/GSM with local SD card fallback when grid internet fails.</li>
+          <li><strong>Grassroots Trust:</strong> Established village council (Panchayat) partnerships and transparent public indicators.</li>
+        </ul>
+      </div>
+
+      <!-- 5. CHANNELS -->
+      <div class="canvas-card grid-col-4-bottom">
+        <div class="canvas-num">5</div>
+        <div class="canvas-badge">📢 Path to Users</div>
+        <h3 class="canvas-header-title">Channels</h3>
+        <ul class="canvas-content-list">
+          <li>Local government rural development departments and municipal utilities.</li>
+          <li>WASH NGOs (WaterAid, UNICEF) and Corporate Social Responsibility (CSR) grants.</li>
+          <li>School & community water kiosks ("Water ATMs").</li>
+          <li>Automated SMS/IVR voice updates to community members.</li>
+        </ul>
+      </div>
+
+      <!-- 2. CUSTOMER SEGMENTS -->
+      <div class="canvas-card grid-col-5-span-2">
+        <div class="canvas-num">2</div>
+        <div class="canvas-badge">👥 Target Users</div>
+        <h3 class="canvas-header-title">Customer Segments</h3>
+        <ul class="canvas-content-list">
+          <li><strong>Primary Beneficiaries:</strong> Rural and peri-urban households lacking treated municipal piped water.</li>
+          <li><strong>Institutional Buyers:</strong> Public primary schools, rural healthcare clinics, and village councils.</li>
+          <li><strong>Early Adopters:</strong> CSR grant managers (e.g. IBM Call for Code, tech foundations) seeking measurable, auditable impact.</li>
+        </ul>
+      </div>
+
+      <!-- 7. COST STRUCTURE (Bottom Left) -->
+      <div class="canvas-card grid-bottom-left">
+        <div class="canvas-num">7</div>
+        <div class="canvas-badge">💳 Main Expenses</div>
+        <h3 class="canvas-header-title">Cost Structure</h3>
+        <ul class="canvas-content-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
+          <li><strong>Hardware & Sensors:</strong> ESP32 controllers, probes (pH, TDS, Turbidity), UV-C lamps, and solenoid valves (~$25–35 / unit).</li>
+          <li><strong>Cloud & Network:</strong> Cloud database telemetry ingestion (IBM Cloud / AWS), SMS alerts gateway.</li>
+          <li><strong>Operations & Logistics:</strong> Field technician replacement filter cartridges, sensor calibration routines.</li>
+        </ul>
+      </div>
+
+      <!-- 6. REVENUE STREAMS (Bottom Right) -->
+      <div class="canvas-card grid-bottom-right">
+        <div class="canvas-num">6</div>
+        <div class="canvas-badge">💰 Sustainable Model</div>
+        <h3 class="canvas-header-title">Revenue Streams</h3>
+        <ul class="canvas-content-list">
+          <li><strong>Hardware Deployments:</strong> Funded via government water mission tenders and corporate CSR foundations.</li>
+          <li><strong>Micro-Payment Water ATM:</strong> Nominal fee (e.g. $0.03 / ₹1 per 20L container) covering technician wages and replacement filters.</li>
+          <li><strong>B2G Utility SaaS:</strong> Municipal subscription for centralized water safety compliance and contamination heatmaps.</li>
+        </ul>
+      </div>
+
+      <!-- 10. HIGH-LEVEL CONCEPT (Full Width Bar) -->
+      <div class="hl-concept-bar">
+        <div>
+          <span class="hl-title">10. High-Level Concept:</span>
+          <span class="hl-quote">"A Fitbit + Smart Water ATM for Community Health and Clean Water Access."</span>
+        </div>
+        <span style="font-size: 0.85rem; color: var(--accent-cyan);">Simple, Scalable, Life-Saving</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SYSTEM ARCHITECTURE & HOW IT WORKS -->
+  <section id="architecture" class="container arch-section">
+    <div class="section-header">
+      <span class="section-tag">Technical Architecture</span>
+      <h2 class="section-title">How the System Works End-to-End</h2>
+      <p class="section-desc">
+        A 4-tier pipeline combining physical purification, edge sensory intelligence, cloud analytics, and rapid community action.
+      </p>
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-card">
+        <div class="flow-step-num">1</div>
+        <h3>Multi-Stage Filtration</h3>
+        <p>Raw water passes through sediment pre-filters, activated carbon, and UV-C sterilization chambers powered by solar panels.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-step-num">2</div>
+        <h3>Edge Sensor Node</h3>
+        <p>An ESP32 microcontroller continuously reads analog inputs from pH, TDS, Turbidity, and flow sensors every 1.5 seconds.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-step-num">3</div>
+        <h3>Instant Local Action</h3>
+        <p>If contamination is detected, the on-board relay closes the Solenoid Valve instantly, physically blocking contaminated water output.</p>
+      </div>
+      <div class="flow-card">
+        <div class="flow-step-num">4</div>
+        <h3>Cloud & Community Sync</h3>
+        <p>Telemetry syncs via Wi-Fi/GSM to cloud servers, broadcasting immediate SMS warnings to local families and dispatching repair teams.</p>
+      </div>
+    </div>
+
+    <!-- Bill of Materials (BOM) Table -->
+    <div class="bom-table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Hardware Component</th>
+            <th>Specification & Role</th>
+            <th>Est. Unit Cost</th>
+            <th>Practicality for POC</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>ESP32 Microcontroller</strong></td>
+            <td>Dual-core 240MHz, built-in Wi-Fi & BLE, multiple ADC pins</td>
+            <td>~$5.00 (₹420)</td>
+            <td><span class="text-safe">Readily Available</span></td>
+          </tr>
+          <tr>
+            <td><strong>Analog TDS Sensor</strong></td>
+            <td>0–1000 ppm range, 3.3V/5V compatible, water probe</td>
+            <td>~$3.50 (₹280)</td>
+            <td><span class="text-safe">Readily Available</span></td>
+          </tr>
+          <tr>
+            <td><strong>Turbidity Sensor (Gravity)</strong></td>
+            <td>Optical sensor detecting suspended mud and sediment (0–30 NTU)</td>
+            <td>~$4.50 (₹380)</td>
+            <td><span class="text-safe">Readily Available</span></td>
+          </tr>
+          <tr>
+            <td><strong>Analog pH Sensor Kit</strong></td>
+            <td>BNC glass probe with signal conditioning board</td>
+            <td>~$9.00 (₹750)</td>
+            <td><span class="text-safe">Readily Available</span></td>
+          </tr>
+          <tr>
+            <td><strong>12V DC Solenoid Cut-off Valve</strong></td>
+            <td>Normally-closed automatic water shutoff valve driven by 5V Relay</td>
+            <td>~$4.00 (₹320)</td>
+            <td><span class="text-safe">Readily Available</span></td>
+          </tr>
+          <tr>
+            <td><strong>YF-S201 Hall Water Flow Meter</strong></td>
+            <td>Measures exact liters dispensed, calculates community consumption</td>
+            <td>~$2.50 (₹200)</td>
+            <td><span class="text-safe">Readily Available</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- IMPACT CALCULATOR -->
+  <section id="impact" class="container">
+    <div class="calc-box">
+      <div class="calc-left">
+        <span class="section-tag">Community Benefit Metric</span>
+        <h3>Real-World Impact Estimator</h3>
+        <p>Slide to simulate scaling this clean water installation across rural communities and see the quantified healthcare and financial returns.</p>
+
+        <div class="calc-slider-wrap">
+          <label>
+            <span>Community Size</span>
+            <span id="calc-families-val" style="color: var(--accent-cyan); font-weight: 700;">250 Families</span>
+          </label>
+          <input type="range" id="families-slider" min="20" max="1500" step="10" value="250" style="width: 100%; accent-color: var(--primary-light); cursor: pointer;">
+        </div>
+      </div>
+
+      <div class="calc-results-grid">
+        <div class="calc-res-item">
+          <div id="res-liters" class="calc-res-val">5,625 L</div>
+          <div class="calc-res-sub">Safe Water Dispensed / Day</div>
+        </div>
+        <div class="calc-res-item">
+          <div id="res-lives" class="calc-res-val">1,125</div>
+          <div class="calc-res-sub">Active People Protected</div>
+        </div>
+        <div class="calc-res-item">
+          <div id="res-cases" class="calc-res-val">506 / yr</div>
+          <div class="calc-res-sub">Waterborne Illness Cases Averted</div>
+        </div>
+        <div class="calc-res-item">
+          <div id="res-savings" class="calc-res-val">$6,000 / mo</div>
+          <div class="calc-res-sub">Community Medical & Bottled Water Savings</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-sdg-tag">💧 UN SDG 6: Clean Water and Sanitation for All</div>
+      <p>AquaPure IoT • Smart Community Water Purity & Sanitation Infrastructure</p>
+      <p style="margin-top: 6px; font-size: 0.8rem; color: #64748b;">
+        Designed for IBM Project / Academic Innovation Showcase. Fully implementable with off-the-shelf ESP32 hardware.
+      </p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
